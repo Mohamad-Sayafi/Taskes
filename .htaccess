@@ -1,0 +1,6 @@
+#Options -Indexes
+
+#RewriteEngine On
+
+#RewriteRule \.(js|css)$ - [L]
+#RewriteRule ^(.*)$ index.php [QSA,L]

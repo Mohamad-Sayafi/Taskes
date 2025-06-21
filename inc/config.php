@@ -4,7 +4,7 @@ global $config;
 
 $config = array(
     'db' => [
-        'name' => 'Taskes',
+        'name' => 'Tasks',
         'username' => 'root',
         'password' => '',
         'host' => 'localhost'
