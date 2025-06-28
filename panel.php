@@ -36,7 +36,7 @@ $tasks = db_select($sql);
             </div>
 
             <div class="d-flex flex-column align-items-end gap-1">
-                
+
                 <a href="template/delete.php?task_id=<?= $task['task_id'] ?>"
                     class="btn btn-sm btn-outline-danger" title="Delete Task">delet</a>
 
@@ -57,7 +57,6 @@ $tasks = db_select($sql);
             </div>
         </div>
     <?php endforeach; ?>
-<!-- <input type="checkbox" disabled> -->
 </body>
 
 </html>
