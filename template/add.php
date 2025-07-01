@@ -11,11 +11,13 @@ if (isset($_POST['submit_task'])) {
     $user_id = $_SESSION['user_id'];
     $title = $_POST['task_title'];
     $content = $_POST['task_content'];
+    $task_space = $_POST['task_space'];
 
     $data = [
         'user_id' => $user_id,
         'task_title' => $title,
-        'task_content' => $content
+        'task_content' => $content,
+        'task_space' => $task_space
     ];
 
     if (db_insert('user_tasks', $data)) {
