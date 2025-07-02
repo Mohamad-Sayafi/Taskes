@@ -61,7 +61,7 @@ function db_select($sql)
 {
     $connection = db_connection();
     $result = mysqli_query($connection, $sql);
-    $output = mysqli_fetch_all($result,MYSQLI_ASSOC);
+    $output = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $output;
 }
 
@@ -70,7 +70,14 @@ function db_select($sql)
 function db_select_one($sql)
 {
     $connection = db_connection();
-    $result = mysqli_query($connection, $sql);  
+    $result = mysqli_query($connection, $sql);
     $output = mysqli_fetch_assoc($result);
     return $output;
 };
+
+
+function base_url()
+{
+    global $config;
+    return $config['base_url'];
+}

@@ -9,5 +9,5 @@ $config = array(
         'password' => '',
         'host' => 'localhost'
     ],
-    'base_url' => ['http://localhost/Taskes']
+    'base_url' => 'http://localhost/Taskes'
 );

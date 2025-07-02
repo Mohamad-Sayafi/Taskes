@@ -13,24 +13,31 @@ if (isset($_SESSION['success'])) {
         $success = $_SESSION['success'];
         unset($_SESSION['success']);
 }
-// $request = $_REQUEST['q'] ?? '';
+
+// $request = $_REQUEST['q'];
+
 // $requests = explode('/', $request);
+
 // $first = $requests[0];
 
 
+// if (!$first) {
+//         echo 'home';
+// }
 
 // $routs = [
-//         'login' => 'template/login.php',
-//         'panel' => 'panel.php',
+//         'login'    => 'template/login.php',
+//         'panel'    => 'panel.php',
 //         'register' => 'template/register.php',
-//         'new' => 'template/new.php',
-//         'delete' => 'template/delete.php',
+//         'new'      => 'template/new.php',
+//         'delete'   => 'template/delete.php',
 // ];
 
 // if (isset($routs[$first])) {
 //         require_once $routs[$first];
+// } else {
+//         echo "'$first not found';
 // }
-
 ?>
 
 <!DOCTYPE html>
