@@ -1,6 +1,20 @@
 <?php
 
 require_once 'loader.php';
+
+
+
+if (isset($_SESSION['error'])) {
+        $error = $_SESSION['error'];
+        unset($_SESSION['error']);
+}
+
+if (isset($_SESSION['success'])) {
+        $success = $_SESSION['success'];
+        unset($_SESSION['success']);
+}
+
+require_once 'loader.php';
 session_start();
 
 
@@ -14,30 +28,22 @@ if (isset($_SESSION['success'])) {
         unset($_SESSION['success']);
 }
 
-// $request = $_REQUEST['q'];
+$request = $_REQUEST['q'] ?? '';
 
-// $requests = explode('/', $request);
+$requests = explode('/', (string)$request);
 
-// $first = $requests[0];
+$first = $requests[0] ?? '';
+
+$routs = [
+        'login'    => 'login.php',
+        'register' => 'template/register.php',
+];
 
 
-// if (!$first) {
-//         echo 'home';
-// }
-
-// $routs = [
-//         'login'    => 'template/login.php',
-//         'panel'    => 'panel.php',
-//         'register' => 'template/register.php',
-//         'new'      => 'template/new.php',
-//         'delete'   => 'template/delete.php',
-// ];
-
-// if (isset($routs[$first])) {
-//         require_once $routs[$first];
-// } else {
-//         echo "'$first not found';
-// }
+if (isset($routs[$first])) {
+        require_once $routs[$first];
+        exit;
+}
 ?>
 
 <!DOCTYPE html>

@@ -12,6 +12,7 @@ $sql = "SELECT * FROM user_tasks WHERE user_id = $user_id";
 $tasks = db_select($sql);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,140 +21,192 @@ $tasks = db_select($sql);
     <title>Your Tasks</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <style>
-        .table-style {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
+        body {
+            font-size: 0.9rem;
         }
 
-        .table-style th,
-        .table-style td {
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* دقیقاً 3 تا در هر ردیف */
+            gap: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .tasks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .task-card {
             border: 1px solid #dee2e6;
-            padding: 0.75rem;
-            vertical-align: middle;
-            text-align: center;
-            overflow: hidden;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #fff;
         }
 
-        .table-style th {
-            background-color: #f8f9fa;
+        .task-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
         }
 
-        .table-style th:nth-child(1),
-        .table-style td:nth-child(1),
-        .table-style th:nth-child(5),
-        .table-style td:nth-child(5),
-        .table-style th:nth-child(6),
-        .table-style td:nth-child(6),
-        .table-style th:nth-child(7),
-        .table-style td:nth-child(7) {
-            width: 11%;
-            white-space: nowrap;
+        .task-label {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+            color: #333;
+            font-size: 1.4rem;
         }
 
-        .table-style th:nth-child(2),
-        .table-style td:nth-child(2) {
-            width: 25%;
+        .task-text {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.6rem;
+            white-space: pre-wrap;
         }
 
-        .table-style th:nth-child(3),
-        .table-style td:nth-child(3),
-        .table-style th:nth-child(4),
-        .table-style td:nth-child(4) {
-            width: 18%;
-            white-space: nowrap;
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
         }
 
-        .table-style td:nth-child(1),
-        .table-style td:nth-child(2) {
-            word-break: break-word;
-            white-space: normal;
-            text-align: center;
+        .task-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
         }
 
-        form {
-            margin: 0;
+        .badge-status {
+            font-size: 0.75rem;
+            padding: 0.3em 0.6em;
         }
 
         .completion-box {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
+        }
+
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+        }
+
+        .bottom-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 0.6rem;
+            margin-top: auto;
+        }
+
+        .bottom-info div span {
+            display: block;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .header-bar h4 {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .header-bar a {
+            font-size: 0.95rem;
         }
     </style>
 </head>
 
-<body class="p-2" style="max-width: 1000px; margin: auto; font-size: 0.95rem;">
+<body class="p-3" style="max-width: 1200px; margin: auto;">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">Your Tasks</h4>
-        <a href="template/new.php" class="btn btn-sm btn-success">Add Task</a>
+    <div class="header-bar">
+        <h4>Your Tasks</h4>
+        <a href="template/new.php" class="btn btn-success btn-sm">+ Add Task</a>
     </div>
 
-    <table class="table-style">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Content</th>
-                <th>Date Added</th>
-                <th>Time Limit</th>
-                <th>Status</th>
-                <th>Completion</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($tasks as $task): ?>
-                <tr>
-                    <td><?= $task['task_title'] ?></td>
-                    <td><?= $task['task_content'] ?></td>
-                    <td><?= $task['task_time'] ?></td>
-                    <td><?= $task['task_space'] ?></td>
+    <div class="tasks-grid">
+        <?php foreach ($tasks as $task): ?>
+            <?php
+            $is_done = !empty($task['task_done']);
+            $do_time = strtotime($task['task_space']);
+            $now = time();
 
+            if ($is_done) {
+                $status = 'Completed';
+                $badge = 'success';
+            } elseif ($do_time < $now) {
+                $status = 'Passed';
+                $badge = 'danger';
+            } elseif ($do_time > $now) {
+                $status = 'Awaiting';
+                $badge = 'warning';
+            } else {
+                $status = 'Not Completed';
+                $badge = 'secondary';
+            }
+            ?>
 
-                    <td>
-                        <?php
-                        $is_done = !empty($task['task_done']);
-                        $do_time = strtotime($task['task_space']);
-                        $now = time();
+            <div class="task-card">
+                <div class="task-header">
+                    <div style="flex: 1;">
+                        <div class="task-label">Title:</div>
+                        <div class="task-title"><?= htmlspecialchars($task['task_title']) ?></div>
 
-                        if ($is_done) {
-                            echo ' Completed';
-                        } elseif ($do_time < $now) {
-                            echo ' Passed';
-                        } elseif ($do_time > $now) {
-                            echo ' Awaiting';
-                        } else {
-                            echo 'Not Completed';
-                        }
-                        ?>
-                    </td>
+                        <div class="task-label">Content:</div>
+                        <div class="task-text"><?= nl2br(htmlspecialchars($task['task_content'])) ?></div>
+                    </div>
 
-                    <td>
-                        <form action="template/done_task.php" method="get">
-                            <div class="completion-box">
-                                <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
+                    <div class="task-actions">
+                        <span class="badge bg-<?= $badge ?> badge-status"><?= $status ?></span>
 
-                                <input type="checkbox" name="done" value="1"
-                                    <?= $is_done ? 'checked disabled' : '' ?>>
-
-                                <button type="submit" class="btn btn-sm btn-outline-success"
-                                    <?= $is_done ? 'disabled' : '' ?>>
-                                    Submit
-                                </button>
-                            </div>
+                        <form action="template/done_task.php" method="get" class="completion-box">
+                            <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
+                            <input type="checkbox" name="done" value="1" <?= $is_done ? 'checked disabled' : '' ?>>
+                            <button type="submit" class="btn btn-outline-success btn-sm"
+                                <?= $is_done ? 'disabled' : '' ?>>Submit</button>
                         </form>
-                    </td>
 
-                    <td>
-                        <a href="template/delete.php?task_id=<?= $task['task_id'] ?>"
-                            class="btn btn-sm btn-outline-danger">Delete</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+                        <a href="template/delete.php?task_id=<?= $task['task_id'] ?>" class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bottom-info">
+                    <div>
+                        Date Added:
+                        <span><?= $task['task_time'] ?></span>
+                    </div>
+                    <div style="text-align: right;">
+                        Time Limit:
+                        <span><?= $task['task_space'] ?></span>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
 </body>
 
