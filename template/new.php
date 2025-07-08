@@ -1,4 +1,7 @@
-<?php ?>
+<?php
+date_default_timezone_set('Asia/Tehran');
+$date = date('Y-m-d\TH:i');
+?>
 <!DOCTYPE html>
 <html lang="fa">
 
@@ -16,7 +19,7 @@
         <form action="add.php" method="post">
           <input type="text" class="form-control mb-3" name="task_title" placeholder="Title" required>
           <textarea class="form-control mb-3" name="task_content" rows="4" placeholder="Content" required></textarea>
-          <input type="datetime-local" class="form-control mb-3" name="task_space" required>
+          <input type="datetime-local" class="form-control mb-3" name="task_space" value="<?php echo $date; ?>" required>
           <button type="submit" name="submit_task" class="btn btn-success w-100">Save</button>
         </form>
       </div>

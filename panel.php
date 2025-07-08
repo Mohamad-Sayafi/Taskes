@@ -10,11 +10,12 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $sql = "SELECT * FROM user_tasks WHERE user_id = $user_id";
 $tasks = db_select($sql);
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 
 <head>
     <meta charset="UTF-8">
@@ -28,7 +29,6 @@ $tasks = db_select($sql);
         .tasks-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            /* دقیقاً 3 تا در هر ردیف */
             gap: 1rem;
         }
 
@@ -59,6 +59,7 @@ $tasks = db_select($sql);
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.4rem;
+            text-wrap: wrap;
         }
 
         .task-label {
@@ -140,7 +141,6 @@ $tasks = db_select($sql);
 </head>
 
 <body class="p-3" style="max-width: 1200px; margin: auto;">
-
     <div class="header-bar">
         <h4>Your Tasks</h4>
         <a href="template/new.php" class="btn btn-success btn-sm">+ Add Task</a>
@@ -155,16 +155,12 @@ $tasks = db_select($sql);
 
             if ($is_done) {
                 $status = 'Completed';
-                $badge = 'success';
             } elseif ($do_time < $now) {
                 $status = 'Passed';
-                $badge = 'danger';
             } elseif ($do_time > $now) {
                 $status = 'Awaiting';
-                $badge = 'warning';
             } else {
                 $status = 'Not Completed';
-                $badge = 'secondary';
             }
             ?>
 
@@ -172,14 +168,16 @@ $tasks = db_select($sql);
                 <div class="task-header">
                     <div style="flex: 1;">
                         <div class="task-label">Title:</div>
-                        <div class="task-title"><?= htmlspecialchars($task['task_title']) ?></div>
+                        <div class="task-title"><?php echo $task['task_title']; ?></div>
 
                         <div class="task-label">Content:</div>
-                        <div class="task-text"><?= nl2br(htmlspecialchars($task['task_content'])) ?></div>
+                        <div class="task-text"><?php echo $task['task_content']; ?></div>
                     </div>
 
                     <div class="task-actions">
-                        <span class="badge bg-<?= $badge ?> badge-status"><?= $status ?></span>
+                        <span class="badge-dark badge-status">
+                            <label class="">Status:</label>
+                            <?= $status ?></span>
 
                         <form action="template/done_task.php" method="get" class="completion-box">
                             <input type="hidden" name="task_id" value="<?= $task['task_id'] ?>">
@@ -197,7 +195,7 @@ $tasks = db_select($sql);
                 <div class="bottom-info">
                     <div>
                         Date Added:
-                        <span><?= $task['task_time'] ?></span>
+                        <span><?php echo time_ago($task['task_time']); ?></span>
                     </div>
                     <div style="text-align: right;">
                         Time Limit:
@@ -207,7 +205,6 @@ $tasks = db_select($sql);
             </div>
         <?php endforeach; ?>
     </div>
-
 </body>
 
 </html>
