@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'loader.php';
+date_default_timezone_set('Asia/Tehran');
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -21,6 +22,8 @@ $tasks = db_select($sql);
     <meta charset="UTF-8">
     <title>Your Tasks</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <script src="assets/js/all.min.js"></script>
     <style>
         body {
             font-size: 0.9rem;
@@ -137,13 +140,23 @@ $tasks = db_select($sql);
         .header-bar a {
             font-size: 0.95rem;
         }
+        .profile{
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 
 <body class="p-3" style="max-width: 1200px; margin: auto;">
     <div class="header-bar">
         <h4>Your Tasks</h4>
-        <a href="template/new.php" class="btn btn-success btn-sm">+ Add Task</a>
+        <div class="profile">
+            <a href="template/new.php" class="btn btn-success btn-sm">+ Add Task</a>
+            <a href="template/update.php"><i class="fa-solid fa-circle-user" style="font-size :x-large; color:gray;"></i></a>
+        </div>
     </div>
 
     <div class="tasks-grid">
@@ -176,7 +189,7 @@ $tasks = db_select($sql);
 
                     <div class="task-actions">
                         <span class="badge-dark badge-status">
-                            <label class="">Status:</label>
+                            <label class="task-label">Status:</label><br>
                             <?= $status ?></span>
 
                         <form action="template/done_task.php" method="get" class="completion-box">
@@ -199,7 +212,22 @@ $tasks = db_select($sql);
                     </div>
                     <div style="text-align: right;">
                         Time Limit:
-                        <span><?= $task['task_space'] ?></span>
+                        <br>
+                        <?php
+
+                        $now = time();
+                        $expire = strtotime($task['task_space']);
+                        $difference = $expire - $now;
+
+                        if ($now > $expire) {
+                            echo "task passed";
+                        } elseif ($difference < 3600) {
+                            echo floor($difference / 60) . " minutes left";
+                        } else {
+                            $hours = floor($difference / 3600);
+                            echo "$hours hours left";
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

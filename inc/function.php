@@ -1,5 +1,6 @@
 <?php
 require_once 'tables.php';
+date_default_timezone_set('Asia/Tehran');
 function db_connection()
 {
     global $config;
@@ -82,30 +83,31 @@ function base_url()
     return $config['base_url'];
 }
 
-function time_ago($timestamp)
+function time_ago($datetime)
 {
-    $current_time = time();
-    $time_diff = $current_time - strtotime($timestamp);
-    $seconds = $time_diff;
-    $minutes = round($seconds / 60);
-    $hours = round($seconds / 3600);
-    $days = round($seconds / 86400);
-    $weeks = round($seconds / 604800);
-    $months = round($seconds / 2629440);
-    $years = round($seconds / 31553280);
-    if ($seconds <= 60) {
-        return "Just now";
-    } elseif ($minutes <= 60) {
-        return ($minutes == 1) ? "1 minute ago" : "$minutes minutes ago";
-    } elseif ($hours <= 24) {
-        return ($hours == 1) ? "1 hour ago" : "$hours hours ago";
-    } elseif ($days <= 7) {
-        return ($days == 1) ? "1 day ago" : "$days days ago";
-    } elseif ($weeks <= 4.3) {
-        return ($weeks == 1) ? "1 week ago" : "$weeks weeks ago";
-    } elseif ($months <= 12) {
-        return ($months == 1) ? "1 month ago" : "$months months ago";
+    $timestamp = is_numeric($datetime) ? (int)$datetime : strtotime($datetime);
+    $now = time();
+    $diff = $now - $timestamp;
+
+    if ($diff < 60) {
+        return 'Just now';
+    } elseif ($diff < 3600) {
+        $minutes = floor($diff / 60);
+        return $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 86400) {
+        $hours = floor($diff / 3600);
+        return $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 604800) {
+        $days = floor($diff / 86400);
+        return $days . ' day' . ($days > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 2629746) {
+        $weeks = floor($diff / 604800);
+        return $weeks . ' week' . ($weeks > 1 ? 's' : '') . ' ago';
+    } elseif ($diff < 31556952) {
+        $months = floor($diff / 2629746);
+        return $months . ' month' . ($months > 1 ? 's' : '') . ' ago';
     } else {
-        return ($years == 1) ? "1 year ago" : "$years years ago";
+        $years = floor($diff / 31556952);
+        return $years . ' year' . ($years > 1 ? 's' : '') . ' ago';
     }
 }
